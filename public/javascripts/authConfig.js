@@ -5,7 +5,7 @@ const msalConfig = {
     auth: {
         clientId: "9f898d69-f3b2-4704-8296-ddb8a02f4cc5",
         authority: "https://login.microsoftonline.com/common",
-        redirectUri: "http://localhost:3000/",
+        redirectUri: process.env.PORT === 3000 ? "http://localhost:3000" : "https://patient-web.azurewebsites.net/",
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
