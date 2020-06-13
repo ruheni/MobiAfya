@@ -5,7 +5,7 @@ const msalConfig = {
     auth: {
         clientId: "9f898d69-f3b2-4704-8296-ddb8a02f4cc5",
         authority: "https://login.microsoftonline.com/common",
-        redirectUri: process.env.PORT === 3000 ? "http://localhost:3000" : "https://patient-web.azurewebsites.net/",
+        redirectUri: "https://patient-web.azurewebsites.net/",
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
@@ -21,6 +21,6 @@ const loginRequest = {
 // Add here scopes for access token to be used at MS Graph API endpoints.
 const tokenRequest = {
     scopes: ["User.Read", "Mail.Read"],
-    forceRefresh: false // set this to "true" if you would like to skip a cached token and go to the server
+    forceRefresh: true // set this to "true" if you would like to skip a cached token and go to the server
 };
 
