@@ -5,6 +5,12 @@ body {
   margin: 0;
 }
 
+.alert-pre {
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
 #webchat {
   height: calc(100% - 65px);
   width: 100%;
