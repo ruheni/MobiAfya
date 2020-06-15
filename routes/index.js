@@ -49,6 +49,11 @@ router.get('/', function (req, res, next) {
   res.render('index');
 });
 
+/* GET maps page */
+router.get('/maps', function (req, res, next) {
+  res.render('index')
+})
+
 router.post('/chatbot', function (req, res) {
   if (!isUserAuthenticated()) {
     res.status(403).send();
