@@ -43,8 +43,8 @@ function chatRequested() {
 
 function getUserLocation(callback) {
     navigator.geolocation.getCurrentPosition(
-        function(position) {
-            var latitude  = position.coords.latitude;
+        function (position) {
+            var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
             var location = {
                 lat: latitude,
@@ -52,7 +52,7 @@ function getUserLocation(callback) {
             }
             callback(location);
         },
-        function(error) {
+        function (error) {
             // user declined to share location
             console.log("location error:" + error.message);
             callback();
@@ -74,7 +74,7 @@ function initBotConversation() {
     };
     let domain = undefined;
     if (tokenPayload.directLineURI) {
-        domain =  "https://" +  tokenPayload.directLineURI + "/v3/directline";
+        domain = "https://" + tokenPayload.directLineURI + "/v3/directline";
     }
     var botConnection = window.WebChat.createDirectLine({
         token: tokenPayload.connectorToken,
@@ -85,54 +85,57 @@ function initBotConversation() {
         // botAvatarInitials: '',
         // userAvatarImage: '',
         hideSendBox: false, /* set to true to hide the send box from the view */
-        botAvatarInitials: 'Bot',
+        botAvatarInitials: 'MobiBot',
         userAvatarInitials: 'You',
         backgroundColor: '#F8F8F8'
     };
 
-    const store = window.WebChat.createStore({}, function(store) { return function(next) { return function(action) {
-        if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            store.dispatch({
-                type: 'DIRECT_LINE/POST_ACTIVITY',
-                meta: {method: 'keyboard'},
-                payload: {
-                    activity: {
-                        type: "invoke",
-                        name: "InitConversation",
-                        locale: user.locale,
-                        value: {
-                            // must use for authenticated conversation.
-                            jsonWebToken: jsonWebToken,
+    const store = window.WebChat.createStore({}, function (store) {
+        return function (next) {
+            return function (action) {
+                if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+                    store.dispatch({
+                        type: 'DIRECT_LINE/POST_ACTIVITY',
+                        meta: { method: 'keyboard' },
+                        payload: {
+                            activity: {
+                                type: "invoke",
+                                name: "InitConversation",
+                                locale: user.locale,
+                                value: {
+                                    // must use for authenticated conversation.
+                                    jsonWebToken: jsonWebToken,
 
-                            // Use the following activity to proactively invoke a bot scenario
-                            /*
-                            triggeredScenario: {
-                                trigger: "{scenario_id}",
-                                args: {
-                                    myVar1: "{custom_arg_1}",
-                                    myVar2: "{custom_arg_2}"
+                                    // Use the following activity to proactively invoke a bot scenario
+
+                                    triggeredScenario: {
+                                        trigger: "Extend_triage_with_handoff",
+                                        args: {
+                                            myVar1: "{custom_arg_1}",
+                                            myVar2: "{custom_arg_2}"
+                                        }
+                                    }
                                 }
                             }
-                            */
                         }
+                    });
+
+                }
+                else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+                    if (action.payload && action.payload.activity && action.payload.activity.type === "event" && action.payload.activity.name === "ShareLocationEvent") {
+                        // share
+                        getUserLocation(function (location) {
+                            store.dispatch({
+                                type: 'WEB_CHAT/SEND_POST_BACK',
+                                payload: { value: JSON.stringify(location) }
+                            });
+                        });
                     }
                 }
-            });
-
-        }
-        else if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-            if (action.payload && action.payload.activity && action.payload.activity.type === "event" && action.payload.activity.name === "ShareLocationEvent") {
-                // share
-                getUserLocation(function (location) {
-                    store.dispatch({
-                        type: 'WEB_CHAT/SEND_POST_BACK',
-                        payload: { value: JSON.stringify(location) }
-                    });
-                });
+                return next(action);
             }
         }
-        return next(action);
-    }}});
+    });
     const webchatOptions = {
         directLine: botConnection,
         styleOptions: styleOptions,
