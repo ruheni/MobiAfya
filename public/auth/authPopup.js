@@ -20,6 +20,7 @@ function signOut() {
 }
 
 function getTokenPopup(request) {
+
     return myMSALObj.acquireTokenSilent(request)
         .catch(error => {
             console.warn(error);
@@ -33,6 +34,7 @@ function getTokenPopup(request) {
                     console.error(error);
                 });
         });
+
 }
 
 function seeProfile() {
