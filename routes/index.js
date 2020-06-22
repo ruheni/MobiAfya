@@ -1,16 +1,14 @@
-require('dotenv').config();
-const crypto = require('crypto');
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const jwt = require("jsonwebtoken");
 const rp = require("request-promise");
+const { ensureAuth } = require('../middleware/auth')
+const { healthResponse, healthy, unhealthy } = require('../middleware/health')
 
 const WEBCHAT_SECRET = process.env.WEBCHAT_SECRET;
 const DIRECTLINE_ENDPOINT_URI = process.env.DIRECTLINE_ENDPOINT_URI;
 const APP_SECRET = process.env.APP_SECRET;
 const directLineTokenEp = `https://${DIRECTLINE_ENDPOINT_URI || "directline.botframework.com"}/v3/directline/tokens/generate`;
-
-const region = process.env.REGION || "Unknown";
 
 function isUserAuthenticated() {
   // add here the logic to verify the user is authenticated
@@ -29,57 +27,35 @@ const appConfig = {
   }
 };
 
-function healthResponse(res, statusCode, message) {
-  res.status(statusCode).send({
-    health: message,
-    region: region
-  });
-}
 
-function healthy(res) {
-  healthResponse(res, 200, "Ok");
-}
-
-function unhealthy(res) {
-  healthResponse(res, 503, "Unhealthy");
-}
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index');
+router.get('/', ensureAuth, (req, res, next) => {
+  res.render('404');
 });
 
-/* GET maps page */
-router.get('/maps', function (req, res, next) {
-  res.render('index')
+/* GET chat page */
+router.get('/chat', ensureAuth, (req, res, next) => {
+  res.render('chat');
+});
+
+/** GET emergency contacts */
+router.get('/emergency-contacts', (req, res) => {
+  res.render('contacts')
 })
 
-router.post('/chatbot', function (req, res) {
-  if (!isUserAuthenticated()) {
-    res.status(403).send();
-    return;
-  }
-
-  // rp(graphOptions).then(res => console.log(res))
+router.post('/chatbot', (req, res) => {
+  const { userId, displayName } = req.user
+  res.cookie("userId", userId);
 
   rp(appConfig.options)
     .then(function (parsedBody) {
-      var userid = req.query.userId || req.cookies.userid;
-      if (!userid) {
-        userid = crypto.randomBytes(4).toString('hex');
-        res.cookie("userid", userid);
-      }
 
       var response = {};
-      response['userId'] = userid;
-      response['userName'] = req.query.userName;
+      response['userId'] = userId;
+      response['userName'] = displayName;
       response['locale'] = req.query.locale;
       response['connectorToken'] = parsedBody.token;
-
-      /*
-      //Add any additional attributes
-      response['optionalAttributes'] = {age: 33};
-      */
 
       if (req.query.lat && req.query.long) {
         response['location'] = { lat: req.query.lat, long: req.query.long };
@@ -95,7 +71,7 @@ router.post('/chatbot', function (req, res) {
     });
 })
 
-router.get('/health', function (req, res) {
+router.get('/health', (req, res) => {
   if (!appConfig.isHealthy) {
     rp(appConfig.options)
       .then((body) => {

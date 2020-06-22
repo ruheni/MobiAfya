@@ -1,16 +1,25 @@
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 const express = require("express");
 const path = require("path");
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const session = require('express-session')
+const connectDB = require('./util/db');
+const createError = require('http-errors');
+const passport = require('passport');
+const MongoStore = require('connect-mongo')(session)
+const mongoose = require('mongoose');
 
-// Initialize the web app instance,
 const app = express();
+
+// passport config
+require('./util/passport')(passport)
+// connect to db
+connectDB();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -18,19 +27,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-const indexRouter = require('./routes/index');
-
 // session middleware
 app.use(session({
     secret: 'secret_value_right_here',
     resave: false,
     saveUninitialized: false,
-    unset: 'destroy'
+    unset: 'destroy',
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
+// passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth')
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
