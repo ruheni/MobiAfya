@@ -40,19 +40,21 @@ router.post('/', (req, res) => {
 
     switch (text) {
         case "help":
-            message = "Reply with \n 1 if you would like ambulance services,\n 2 if you would like any hospital services and \n 3 for Fire Brigade Services"
+            message = "Reply with: \n 1 if you would like ambulance services,\n 2 if you would like any hospital services and \n 3 for Fire Brigade Services"
             break;
         case "sos":
-            message = "Reply with \n 1 if you would like ambulance services,\n 2 if you would like any hospital services and \n 3 for Fire Brigade Services"
+            message = "Reply with: \n 1 if you would like ambulance services,\n 2 if you would like any hospital services and \n 3 for Fire Brigade Services"
             break;
         case "1":
+            message = "Ambulances: \n"
             for (let contact of ambulanceContacts) {
-                message = `${contact.name} - ${contact.phoneNumber}`
+                message += `${contact.name} - ${contact.phoneNumber}\n`
             }
             break;
         case "2":
+            message = "Hospitals: \n"
             for (let contact of hospitalContacts) {
-                message += `${contact.name} - ${contact.phoneNumber}`
+                message += `${contact.name} - ${contact.phoneNumber}\n`
             }
             break;
         case "3":
