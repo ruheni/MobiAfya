@@ -7,8 +7,8 @@
     "dev": "cross-env NODE_ENV=development nodemon ./bin/www"
   },
   "dependencies": {
-    "@azure/msal-browser": "^2.0.0-beta.0",
-    "@microsoft/microsoft-graph-client": "^2.0.0",
+    "africastalking": "^0.4.7",
+    "body-parser": "^1.19.0",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -18,15 +18,13 @@
     "express-session": "^1.17.1",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
-    "method-override": "^3.0.0",
     "moment": "^2.27.0",
     "mongoose": "^5.9.19",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "request": "^2.88.2",
-    "request-promise": "^4.2.5",
-    "yargs": "^15.3.1"
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
