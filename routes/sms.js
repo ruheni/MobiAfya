@@ -27,7 +27,9 @@ const hospitalContacts = [
     { name: "Coptic Hsp", location: "Ngong rd", phoneNumber: "0735558862" },
     { name: "KNH", location: "Ngong rd", phoneNumber: "0710600943" },
     { name: "Mbagathi Hsp", location: "Mbagathi way", phoneNumber: "020-2728530" },
-    { name: "Jamaa Hsp", location: "Rabai Road", phoneNumber: "0722681534" },
+    { name: "Jamaa Hsp", location: "Rabai Rd", phoneNumber: "0722681534" },
+    { name: "Family Medical Center", location: "Mai Mahiu Rd", phoneNumber: "020 604296/7, 603923/7 " },
+    { name: "Getrudes Garden Children's Hospital ", location: "Muthaiga Rd", phoneNumber: "020 244530/1, 020 720 6000" },
 ]
 
 router.post('/', (req, res) => {
