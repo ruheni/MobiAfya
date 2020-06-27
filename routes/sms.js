@@ -57,7 +57,7 @@ router.post('/', (req, res) => {
             message = "We're yet to add Firebrigade contacts here..."
             break;
         default:
-            message = ""
+            message = "Kindly type help or sos if you would like any form of emergency service"
             break;
     }
 
