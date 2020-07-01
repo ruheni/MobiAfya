@@ -9,6 +9,7 @@ const createError = require('http-errors');
 const passport = require('passport');
 const MongoStore = require('connect-mongo')(session)
 const mongoose = require('mongoose');
+// const bodyParser = require('body-parser')
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false, type: 'application/x-www-form-urlencoded' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -51,6 +52,11 @@ app.use('/emergency', emergencyRouter);
 // emergency contacts middleware
 // var contacts = require('./contacts.js');
 // app.use('/contacts', contacts);
+const smsRouter = require('./routes/sms')
+
+app.use('/', indexRouter);
+app.use('/auth', authRouter)
+app.use('/sms', smsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
