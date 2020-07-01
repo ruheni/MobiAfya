@@ -42,9 +42,15 @@ app.use(passport.session())
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth')
+var emergencyRouter = require('./routes/emergency');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter)
+app.use('/emergency', emergencyRouter);
+
+// emergency contacts middleware
+// var contacts = require('./contacts.js');
+// app.use('/contacts', contacts);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
