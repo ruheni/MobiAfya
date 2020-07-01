@@ -40,9 +40,14 @@ router.get('/chat', ensureAuth, (req, res, next) => {
 });
 
 /** GET emergency contacts */
-router.get('/emergency-contacts', (req, res) => {
-  res.render('contacts')
-})
+// router.get('/emergency-contacts', (req, res) => {
+//   res.render('contacts')
+// })
+
+// GET emergency contacts
+router.get('/', function(req, res) {
+  res.redirect('/emergency');
+});
 
 router.post('/chatbot', (req, res) => {
   const { userId, displayName } = req.user
